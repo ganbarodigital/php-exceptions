@@ -41,7 +41,7 @@
  * @link      http://code.ganbarodigital.com/php-file-system
  */
 
-namespace GanbaroDigital\Exceptions;
+namespace GanbaroDigital\Exceptions\Traits;
 
 use PHPUnit_Framework_TestCase;
 use Exception;
@@ -49,10 +49,19 @@ use Exception;
 class ExceptionMessageDataTest_Target extends Exception
 {
     use ExceptionMessageData;
+
+    public function __construct($className = null, $methodName = null)
+    {
+        $args = [
+            'className' => $className,
+            'methodName' => $methodName
+        ];
+        $this->setMessageData($args);
+    }
 }
 
 /**
- * @coversDefaultClass GanbaroDigital\Exceptions\ExceptionMessageData
+ * @coversDefaultClass GanbaroDigital\Exceptions\Traits\ExceptionMessageData
  */
 class ExceptionMessageDataTest extends PHPUnit_Framework_TestCase
 {
@@ -74,24 +83,33 @@ class ExceptionMessageDataTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @coversNothing
+     * @covers ::getMessageData
+     * @covers ::setMessageData
      */
-    public function testHasExpectedTraitForBackwardsCompatibility()
+    public function testCanStoreAndRetrieveMessageData()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $obj = new ExceptionMessageDataTest_Target();
+        $className = 'fred';
+        $methodName = 'alice';
+
+        $expectedData = [
+            'className' => 'fred',
+            'methodName' => 'alice'
+        ];
 
         // ----------------------------------------------------------------
         // perform the change
 
-
+        $obj = new ExceptionMessageDataTest_Target($className, $methodName);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(method_exists($obj, 'getMessageData'));
+        $actualData = $obj->getMessageData();
+        $this->assertEquals($expectedData, $actualData);
     }
+
 
 }

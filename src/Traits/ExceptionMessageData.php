@@ -38,60 +38,38 @@
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2015-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @link      http://code.ganbarodigital.com/php-file-system
+ * @link      http://code.ganbarodigital.com/php-data-containers
  */
 
-namespace GanbaroDigital\Exceptions;
+namespace GanbaroDigital\Exceptions\Traits;
 
-use PHPUnit_Framework_TestCase;
-use Exception;
-
-class ExceptionMessageDataTest_Target extends Exception
-{
-    use ExceptionMessageData;
-}
-
-/**
- * @coversDefaultClass GanbaroDigital\Exceptions\ExceptionMessageData
- */
-class ExceptionMessageDataTest extends PHPUnit_Framework_TestCase
+trait ExceptionMessageData
 {
     /**
-     * @coversNone
+     * a list of the data used to build the message
+     *
+     * @var array
      */
-    public function testCanInstantiateTargetClass()
+    private $messageData = [];
+
+    /**
+     * return a list of the data items used to build this exception
+     *
+     * @return array
+     */
+    public function getMessageData()
     {
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $obj = new ExceptionMessageDataTest_Target();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $traits = class_uses($obj);
-        $this->assertTrue(in_array(ExceptionMessageData::class, $traits));
+        return $this->messageData;
     }
 
     /**
-     * @coversNothing
+     * set the list of data items used to build this exception
+     *
+     * @param array $data
+     *        the list of data items
      */
-    public function testHasExpectedTraitForBackwardsCompatibility()
+    protected function setMessageData(array $data)
     {
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $obj = new ExceptionMessageDataTest_Target();
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertTrue(method_exists($obj, 'getMessageData'));
+        $this->messageData = $data;
     }
-
 }
