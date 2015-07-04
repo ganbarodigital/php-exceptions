@@ -38,60 +38,31 @@
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2015-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @link      http://code.ganbarodigital.com/php-file-system
+ * @link      http://code.ganbarodigital.com/php-exceptions
  */
 
-namespace GanbaroDigital\Exceptions;
+namespace GanbaroDigital\Exceptions\Traits;
 
-use PHPUnit_Framework_TestCase;
-use Exception;
+use GanbaroDigital\Exceptions\ValueBuilders\CodeCaller;
 
-class ExceptionMessageDataTest_Target extends Exception
-{
-    use ExceptionMessageData;
-}
-
-/**
- * @coversDefaultClass GanbaroDigital\Exceptions\ExceptionMessageData
- */
-class ExceptionMessageDataTest extends PHPUnit_Framework_TestCase
+trait ExceptionCaller
 {
     /**
-     * @coversNone
+     * work out who is throwing the exception
+     *
+     * @param  int $level
+     *         how deep into the backtrace we need to go
+     * @return array
+     *         the calling class, and the calling method
      */
-    public function testCanInstantiateTargetClass()
+    private function getCaller($level)
     {
-        // ----------------------------------------------------------------
-        // perform the change
+        // let's find out who is trying to throw this exception
+        $backtrace = debug_backtrace();
+        for (; $level > 0 && count($backtrace) > 1; $level--) {
+            array_shift($backtrace);
+        }
 
-        $obj = new ExceptionMessageDataTest_Target();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $traits = class_uses($obj);
-        $this->assertTrue(in_array(ExceptionMessageData::class, $traits));
+        return CodeCaller::fromBacktrace($backtrace);
     }
-
-    /**
-     * @coversNothing
-     */
-    public function testHasExpectedTraitForBackwardsCompatibility()
-    {
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $obj = new ExceptionMessageDataTest_Target();
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertTrue(method_exists($obj, 'getMessageData'));
-    }
-
 }

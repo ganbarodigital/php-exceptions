@@ -34,7 +34,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @category  Libraries
- * @package   Exceptions
+ * @package   Exceptions/Traits
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2015-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
@@ -43,33 +43,17 @@
 
 namespace GanbaroDigital\Exceptions;
 
+use GanbaroDigital\Exceptions\Traits\ExceptionMessageData as BaseTrait;
+
+/**
+ * THIS IS ONLY HERE FOR BACKWARDS-COMPATIBILITY
+ *
+ * USE GanbaroDigital\Exceptions\Traits\ExceptionMessageData IN ALL NEW
+ * CODE - DO NOT USE THIS TRAIT
+ *
+ * THIS TRAIT WILL BE REMOVED IN v2.0
+ */
 trait ExceptionMessageData
 {
-    /**
-     * a list of the data used to build the message
-     *
-     * @var array
-     */
-    private $messageData = [];
-
-    /**
-     * return a list of the data items used to build this exception
-     *
-     * @return array
-     */
-    public function getMessageData()
-    {
-        return $this->messageData;
-    }
-
-    /**
-     * set the list of data items used to build this exception
-     *
-     * @param array $data
-     *        the list of data items
-     */
-    protected function setMessageData(array $data)
-    {
-        $this->messageData = $data;
-    }
+    use BaseTrait;
 }

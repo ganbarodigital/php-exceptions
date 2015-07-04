@@ -34,64 +34,52 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @category  Libraries
- * @package   Exceptions/Traits
+ * @package   Exceptions/ValueBuilders
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2015-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @link      http://code.ganbarodigital.com/php-file-system
+ * @link      http://code.ganbarodigital.com/php-exceptions
  */
 
-namespace GanbaroDigital\Exceptions;
+namespace GanbaroDigital\Exceptions\ValueBuilders;
 
 use PHPUnit_Framework_TestCase;
-use Exception;
-
-class ExceptionMessageDataTest_Target extends Exception
-{
-    use ExceptionMessageData;
-}
 
 /**
- * @coversDefaultClass GanbaroDigital\Exceptions\ExceptionMessageData
+ * @coversDefaultClass GanbaroDigital\Exceptions\ValueBuilders\CodeCaller
  */
-class ExceptionMessageDataTest extends PHPUnit_Framework_TestCase
+class CodeCallerTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @coversNone
+     * @covers ::fromBacktrace
      */
-    public function testCanInstantiateTargetClass()
-    {
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $obj = new ExceptionMessageDataTest_Target();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $traits = class_uses($obj);
-        $this->assertTrue(in_array(ExceptionMessageData::class, $traits));
-    }
-
-    /**
-     * @coversNothing
-     */
-    public function testHasExpectedTraitForBackwardsCompatibility()
+    public function testRetrievesClassAndMethod()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $obj = new ExceptionMessageDataTest_Target();
+        // we don't call debug_backtrace() directly here, because the whole
+        // point of the CodeCaller is to workout who called whatever code
+        // provides the debug_backtrace() result
+        $backtrace = $this->getBacktrace();
+
+        $expectedClass = get_class($this);
+        $expectedMethod = 'testRetrievesClassAndMethod';
 
         // ----------------------------------------------------------------
         // perform the change
 
-
+        list($actualClass, $actualMethod) = CodeCaller::fromBacktrace($backtrace);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(method_exists($obj, 'getMessageData'));
+        $this->assertEquals($expectedClass, $actualClass);
+        $this->assertEquals($expectedMethod, $actualMethod);
     }
 
+    protected function getBacktrace()
+    {
+        return debug_backtrace();
+    }
 }

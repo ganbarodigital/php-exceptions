@@ -38,60 +38,81 @@
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2015-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @link      http://code.ganbarodigital.com/php-file-system
+ * @link      http://code.ganbarodigital.com/php-data-containers
  */
 
-namespace GanbaroDigital\Exceptions;
+namespace GanbaroDigital\Exceptions\Traits;
 
 use PHPUnit_Framework_TestCase;
-use Exception;
 
-class ExceptionMessageDataTest_Target extends Exception
+class ExceptionCallerTest_Target
 {
-    use ExceptionMessageData;
+    use ExceptionCaller;
+
+    public $caller;
+
+    public function __construct($level = 1)
+    {
+        $this->caller = $this->getCaller($level);
+    }
 }
 
 /**
- * @coversDefaultClass GanbaroDigital\Exceptions\ExceptionMessageData
+ * @coversDefaultClass GanbaroDigital\Exceptions\Traits\ExceptionCaller
  */
-class ExceptionMessageDataTest extends PHPUnit_Framework_TestCase
+class ExceptionCallerTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @coversNone
+     * @covers ::getCaller
      */
-    public function testCanInstantiateTargetClass()
-    {
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $obj = new ExceptionMessageDataTest_Target();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $traits = class_uses($obj);
-        $this->assertTrue(in_array(ExceptionMessageData::class, $traits));
-    }
-
-    /**
-     * @coversNothing
-     */
-    public function testHasExpectedTraitForBackwardsCompatibility()
+    public function testAutomaticallyWorksOutWhoIsThrowingTheException()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $obj = new ExceptionMessageDataTest_Target();
+        $expectedCaller = [
+            get_class($this),
+            'testAutomaticallyWorksOutWhoIsThrowingTheException',
+        ];
 
         // ----------------------------------------------------------------
         // perform the change
 
-
+        $obj = new ExceptionCallerTest_Target();
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(method_exists($obj, 'getMessageData'));
+        $actualCaller = $obj->caller;
+        $this->assertEquals($expectedCaller, $actualCaller);
     }
 
+    /**
+     * @covers ::getCaller
+     */
+    public function testSupportsUnwindingTheCallStackFurther()
+    {
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $expectedCaller = [
+            get_class($this),
+            'testSupportsUnwindingTheCallStackFurther',
+        ];
+
+        $func = function() {
+            return new ExceptionCallerTest_Target(2);
+        };
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $obj = $func();
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $actualCaller = $obj->caller;
+        $this->assertEquals($expectedCaller, $actualCaller);
+    }
 }

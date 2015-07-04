@@ -38,60 +38,80 @@
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2015-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @link      http://code.ganbarodigital.com/php-file-system
+ * @link      http://code.ganbarodigital.com/php-exceptions
  */
 
-namespace GanbaroDigital\Exceptions;
+namespace GanbaroDigital\Exceptions\Traits;
 
-use PHPUnit_Framework_TestCase;
-use Exception;
-
-class ExceptionMessageDataTest_Target extends Exception
+trait UnsupportedType
 {
-    use ExceptionMessageData;
-}
+    use ExceptionCaller;
 
-/**
- * @coversDefaultClass GanbaroDigital\Exceptions\ExceptionMessageData
- */
-class ExceptionMessageDataTest extends PHPUnit_Framework_TestCase
-{
     /**
-     * @coversNone
+     * @param mixed $type
+     *        result of calling gettype() on the unsupported item
+     * @param integer $level
+     *        how far up the call stack to go
+     * @return array
      */
-    public function testCanInstantiateTargetClass()
+    private function buildErrorData($type, $level = 1)
     {
-        // ----------------------------------------------------------------
-        // perform the change
+        // our list of args, in case someone wants to dig deeper into
+        // what went wrong
+        $data = [];
 
-        $obj = new ExceptionMessageDataTest_Target();
+        // special case - someone passed us the original item, rather than
+        // the type of the item
+        //
+        // we do this conversion to avoid a fatal PHP error
+        $data['type'] = $this->ensureString($type);
 
-        // ----------------------------------------------------------------
-        // test the results
+        // let's find out who is trying to throw this exception
+        // as we are a nested function, we need to look 1 deeper into
+        // the call stack to find the true caller
+        $data['caller'] = $this->getCaller($level + 1);
 
-        $traits = class_uses($obj);
-        $this->assertTrue(in_array(ExceptionMessageData::class, $traits));
+        // all done
+        return $data;
     }
 
     /**
-     * @coversNothing
+     * make sure that we have a string for our message
+     *
+     * @param  mixed $type
+     *         the item to check
+     * @return string
+     *         the original string, or the type of $type
      */
-    public function testHasExpectedTraitForBackwardsCompatibility()
+    private function ensureString($type)
     {
-        // ----------------------------------------------------------------
-        // setup your test
+        if (!is_string($type)) {
+            $type = gettype($type);
+        }
 
-        $obj = new ExceptionMessageDataTest_Target();
+        return $type;
+    }
 
-        // ----------------------------------------------------------------
-        // perform the change
+    /**
+     * create the error message to add to the exception
+     *
+     * @param  string $type
+     *         the data type that the thrower does not support
+     * @param  array $caller
+     *         details about who is throwing the exception
+     * @return string
+     */
+    private function buildErrorMessage($type, $caller)
+    {
+        $msg = "type '{$type}' is not supported by ";
+        if ($caller[0]) {
+            $msg .= $caller[0];
+        }
+        if ($caller[1]) {
+            $msg .= "::{$caller[1]}";
+        }
 
-
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertTrue(method_exists($obj, 'getMessageData'));
+        return $msg;
     }
 
 }
