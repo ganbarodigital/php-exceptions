@@ -4,6 +4,12 @@
 
 Nothing yet.
 
+## 1.1.1 - Sat Jul 4 2015
+
+### Fixed
+
+- ExceptionCaller now uses an immutable debug_backtrace() for better performance
+
 ## 1.1.0 - Sat Jul 4 2015
 
 ### New
