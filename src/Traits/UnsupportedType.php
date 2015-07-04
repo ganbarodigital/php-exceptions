@@ -48,7 +48,7 @@ trait UnsupportedType
     use ExceptionCaller;
 
     /**
-     * @param string $type
+     * @param mixed $type
      *        result of calling gettype() on the unsupported item
      * @param integer $level
      *        how far up the call stack to go
