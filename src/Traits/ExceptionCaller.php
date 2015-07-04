@@ -52,17 +52,15 @@ trait ExceptionCaller
      *
      * @param  int $level
      *         how deep into the backtrace we need to go
+     *
+     *         this is relative to the caller
      * @return array
      *         the calling class, and the calling method
      */
-    private function getCaller($level)
+    private function getCaller($level = 1)
     {
         // let's find out who is trying to throw this exception
         $backtrace = debug_backtrace();
-        for (; $level > 0 && count($backtrace) > 1; $level--) {
-            array_shift($backtrace);
-        }
-
-        return CodeCaller::fromBacktrace($backtrace);
+        return CodeCaller::fromBacktrace($backtrace, $level + 1);
     }
 }

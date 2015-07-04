@@ -45,14 +45,14 @@ namespace GanbaroDigital\Exceptions\ValueBuilders;
 
 class CodeCaller
 {
-    public static function fromBacktrace($backtrace)
+    public static function fromBacktrace($backtrace, $level = 1)
     {
         $retval = [null, null];
-        if (isset($backtrace[1]['class'])) {
-            $retval[0] = $backtrace[1]['class'];
+        if (isset($backtrace[$level]['class'])) {
+            $retval[0] = $backtrace[$level]['class'];
         }
-        if (isset($backtrace[1]['function'])) {
-            $retval[1] = $backtrace[1]['function'];
+        if (isset($backtrace[$level]['function'])) {
+            $retval[1] = $backtrace[$level]['function'];
         }
 
         return $retval;
