@@ -47,12 +47,20 @@ class CodeCaller
 {
     public static function fromBacktrace($backtrace, $level = 1)
     {
-        $retval = [null, null];
-        if (isset($backtrace[$level]['class'])) {
-            $retval[0] = $backtrace[$level]['class'];
-        }
-        if (isset($backtrace[$level]['function'])) {
-            $retval[1] = $backtrace[$level]['function'];
+        static $dataToExtract = [
+            'class',
+            'function',
+            'file',
+            'line',
+        ];
+
+        $retval = [null, null, null, null, 'class' => null, 'function' => null, 'file' => null, 'line' => null];
+
+        foreach ($dataToExtract as $index => $key) {
+            if (isset($backtrace[$level][$key])) {
+                $retval[$index] = $backtrace[$level][$key];
+                $retval[$key] = $backtrace[$level][$key];
+            }
         }
 
         return $retval;
