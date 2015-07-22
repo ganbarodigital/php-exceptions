@@ -78,6 +78,37 @@ class CodeCallerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedMethod, $actualMethod);
     }
 
+    /**
+     * @covers ::fromBacktrace
+     */
+    public function testRetrievesFileAndLineToo()
+    {
+        // ----------------------------------------------------------------
+        // setup your test
+
+        // we don't call debug_backtrace() directly here, because the whole
+        // point of the CodeCaller is to workout who called whatever code
+        // provides the debug_backtrace() result
+        $backtrace = $this->getBacktrace();
+
+        $expectedFile = __FILE__;
+        $expectedLine = 92;
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        // this is a '0' here because of the perculiar way in which PHPUnit
+        // calls tests methods ... it really challenges the PHP call stack
+        // data
+        $actualCaller = CodeCaller::fromBacktrace($backtrace, 0);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertEquals($expectedFile, $actualCaller[2]);
+        $this->assertEquals($expectedLine, $actualCaller[3]);
+    }
+
     protected function getBacktrace()
     {
         return debug_backtrace();

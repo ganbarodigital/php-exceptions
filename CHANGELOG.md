@@ -4,6 +4,13 @@
 
 Nothing yet.
 
+## 1.2.0 - Wed Jul 22 2015
+
+### New
+
+- CodeCaller now returns the file and line number of the caller (if available)
+- CodeCaller now returns associative keys (as well as the original numbered keys)
+
 ## 1.1.1 - Sat Jul 4 2015
 
 ### Fixed
