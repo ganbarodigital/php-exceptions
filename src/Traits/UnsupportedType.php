@@ -50,11 +50,9 @@ trait UnsupportedType
     /**
      * @param mixed $type
      *        result of calling gettype() on the unsupported item
-     * @param integer $level
-     *        how far up the call stack to go
      * @return array
      */
-    private function buildErrorData($type, $level = 1)
+    private function buildErrorData($type)
     {
         // our list of args, in case someone wants to dig deeper into
         // what went wrong
@@ -67,9 +65,7 @@ trait UnsupportedType
         $data['type'] = $this->ensureString($type);
 
         // let's find out who is trying to throw this exception
-        // as we are a nested function, we need to look 1 deeper into
-        // the call stack to find the true caller
-        $data['caller'] = $this->getCaller($level + 1);
+        $data['caller'] = $this->getNonCheckCaller();
 
         // all done
         return $data;

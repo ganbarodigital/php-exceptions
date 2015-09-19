@@ -7,6 +7,10 @@
 * ExceptionCaller - added ExceptionCaller::getNonCheckCaller()
 * NonCheckCodeCaller - a better way to work out who is calling us
 
+### Fixes
+
+* UnsupportedType - now uses the NonCheckCodeCaller (gets closer to the original intended behaviour)
+
 ## 1.2.0 - Wed Jul 22 2015
 
 ### New
