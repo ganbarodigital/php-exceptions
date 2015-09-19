@@ -84,7 +84,8 @@ class ExceptionCallerTest extends PHPUnit_Framework_TestCase
         // test the results
 
         $actualCaller = $obj->caller;
-        $this->assertEquals($expectedCaller, $actualCaller);
+        $this->assertEquals($expectedCaller[0], $actualCaller[0]);
+        $this->assertEquals($expectedCaller[1], $actualCaller[1]);
     }
 
     /**
@@ -113,6 +114,7 @@ class ExceptionCallerTest extends PHPUnit_Framework_TestCase
         // test the results
 
         $actualCaller = $obj->caller;
-        $this->assertEquals($expectedCaller, $actualCaller);
+        $this->assertEquals($expectedCaller[0], $actualCaller[0]);
+        $this->assertEquals($expectedCaller[1], $actualCaller[1]);
     }
 }
