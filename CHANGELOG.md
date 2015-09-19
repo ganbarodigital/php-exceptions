@@ -2,6 +2,10 @@
 
 ## develop branch
 
+Nothing yet.
+
+## 1.3.0 - Sat Sep 19 2015
+
 ### New
 
 * ExceptionCaller - added ExceptionCaller::getNonCheckCaller()
