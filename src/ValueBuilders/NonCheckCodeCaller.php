@@ -81,8 +81,11 @@ class NonCheckCodeCaller
             if (!isset($frame['function'])) {
                 continue;
             }
+            if (!isset($frame['class'])) {
+                return $frame;
+            }
 
-            if (!isset($frame['class']) || self::isClassNameOkay($frame['class'])) {
+            if (self::isClassNameOkay($frame['class'])) {
                 return $frame;
             }
         }
