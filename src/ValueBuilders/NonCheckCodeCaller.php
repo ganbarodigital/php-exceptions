@@ -81,27 +81,39 @@ class NonCheckCodeCaller
             if (!isset($frame['function'])) {
                 continue;
             }
+
             if (!isset($frame['class'])) {
                 return $frame;
             }
 
-            // special case - called from a test
-            if (substr($frame['class'], -4, 4) == 'Test') {
-                return $frame;
-            }
-
-            // general case
-            //
-            // this also deals with the situation where one of our blacklisted
-            // namespaces has namespaces inside it
-            $parts = explode('\\', $frame['class']);
-            if (empty(array_intersect(self::$blacklistedNamespaces, $parts))) {
+            if (self::isClassNameOkay($frame['class'])) {
                 return $frame;
             }
         }
 
         // if we get here, then we have run out of places to look
         return $backtrace[1];
+    }
+
+    private static function isClassNameOkay($className)
+    {
+        // special case - called from a test
+        if (substr($className, -4, 4) == 'Test') {
+            return true;
+        }
+
+        // general case
+        //
+        // this also deals with the situation where one of our blacklisted
+        // namespaces has namespaces inside it
+        $parts = explode('\\', $className);
+        if (empty(array_intersect(self::$blacklistedNamespaces, $parts))) {
+            return true;
+        }
+
+        // if we get here, then this class isn't one that we want to return
+        // to the caller
+        return false;
     }
 
     /**
