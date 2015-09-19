@@ -4,6 +4,7 @@
 
 ### New
 
+* ExceptionCaller - added ExceptionCaller::getNonCheckCaller()
 * NonCheckCodeCaller - a better way to work out who is calling us
 
 ## 1.2.0 - Wed Jul 22 2015

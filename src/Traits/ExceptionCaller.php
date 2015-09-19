@@ -44,6 +44,7 @@
 namespace GanbaroDigital\Exceptions\Traits;
 
 use GanbaroDigital\Exceptions\ValueBuilders\CodeCaller;
+use GanbaroDigital\Exceptions\ValueBuilders\NonCheckCodeCaller;
 
 trait ExceptionCaller
 {
@@ -62,5 +63,23 @@ trait ExceptionCaller
         // let's find out who is trying to throw this exception
         $backtrace = debug_backtrace();
         return CodeCaller::fromBacktrace($backtrace, $level + 1);
+    }
+
+    /**
+     * work out who is throwing the exception
+     *
+     * we unwind the stack, looking for code that is NOT in these namespaces:
+     *
+     * - Checks
+     * - Exceptions
+     * - Requirements
+     *
+     * @return array
+     *         the calling class, and the calling method
+     */
+    private function getNonCheckCaller()
+    {
+        $backtrace = debug_backtrace();
+        return NonCheckCodeCaller::fromBacktrace($backtrace);
     }
 }
