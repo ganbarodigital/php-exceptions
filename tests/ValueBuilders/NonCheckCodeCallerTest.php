@@ -34,87 +34,110 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @category  Libraries
- * @package   Exceptions/Traits
+ * @package   Exceptions/ValueBuilders
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2015-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @link      http://code.ganbarodigital.com/php-data-containers
+ * @link      http://code.ganbarodigital.com/php-exceptions
  */
 
-namespace GanbaroDigital\Exceptions\Traits;
+namespace GanbaroDigital\Exceptions\ValueBuilders;
 
 use PHPUnit_Framework_TestCase;
 
-class ExceptionCallerTest_Target
-{
-    use ExceptionCaller;
-
-    public $caller;
-
-    public function __construct($level = 1)
-    {
-        $this->caller = $this->getCaller($level);
-    }
-}
-
 /**
- * @coversDefaultClass GanbaroDigital\Exceptions\Traits\ExceptionCaller
+ * @coversDefaultClass GanbaroDigital\Exceptions\ValueBuilders\NonCheckCodeCaller
  */
-class ExceptionCallerTest extends PHPUnit_Framework_TestCase
+class NonCheckCodeCallerTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @covers ::getCaller
+     * @covers ::fromBacktrace
      */
-    public function testAutomaticallyWorksOutWhoIsThrowingTheException()
+    public function testRetrievesClassAndMethod()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $expectedCaller = [
-            get_class($this),
-            'testAutomaticallyWorksOutWhoIsThrowingTheException',
-        ];
+        $backtrace = $this->getBacktrace();
+
+        $expectedClass = 'GanbaroDigital\\Reflection\\Jackpot\\JackpotClass';
+        $expectedMethod = 'from';
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $obj = new ExceptionCallerTest_Target();
+        list($actualClass, $actualMethod) = NonCheckCodeCaller::fromBacktrace($backtrace);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $actualCaller = $obj->caller;
-        $this->assertEquals($expectedCaller[0], $actualCaller[0]);
-        $this->assertEquals($expectedCaller[1], $actualCaller[1]);
+        $this->assertEquals($expectedClass, $actualClass);
+        $this->assertEquals($expectedMethod, $actualMethod);
     }
 
     /**
-     * @covers ::getCaller
+     * @covers ::fromBacktrace
      */
-    public function testSupportsUnwindingTheCallStackFurther()
+    public function testRetrievesFileAndLineToo()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $expectedCaller = [
-            get_class($this),
-            'testSupportsUnwindingTheCallStackFurther',
-        ];
+        $backtrace = $this->getBacktrace();
 
-        $func = function() {
-            return new ExceptionCallerTest_Target(2);
-        };
+        $expectedFile = '/tmp/jackpot';
+        $expectedLine = 31415;
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $obj = $func();
+        $actualCaller = NonCheckCodeCaller::fromBacktrace($backtrace);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $actualCaller = $obj->caller;
-        $this->assertEquals($expectedCaller[0], $actualCaller[0]);
-        $this->assertEquals($expectedCaller[1], $actualCaller[1]);
+        $this->assertEquals($expectedFile, $actualCaller[2]);
+        $this->assertEquals($expectedLine, $actualCaller[3]);
+    }
+
+    public function getBacktrace()
+    {
+        return [
+            [
+                'file' => '/tmp/1',
+                'line' => 100,
+                'function' => 'raise',
+                'class' => 'GanbaroDigital\\Reflection\\Exceptions\\E4xx_UnsupportedType',
+                'type' => '->',
+            ],
+            [
+                'file' => '/tmp/2',
+                'line' => 235,
+                'function' => 'checkString',
+                'class' => 'GanbaroDigital\\Reflection\\Checks\\IsStringy',
+                'type' => '->',
+            ],
+            [
+                'file' => '/tmp/3',
+                'line' => 9999,
+                'function' => 'check',
+                'class' => 'GanbaroDigital\\Reflection\\Checks\\IsStringy',
+                'type' => '->',
+            ],
+            [
+                'file' => '/tmp/4',
+                'line' => 1023,
+                'function' => 'check',
+                'class' => 'GanbaroDigital\\Reflection\\Requirements\\RequireStringy',
+                'type' => '->',
+            ],
+            [
+                'file' => '/tmp/jackpot',
+                'line' => 31415,
+                'function' => 'from',
+                'class' => 'GanbaroDigital\\Reflection\\Jackpot\\JackpotClass',
+                'type' => '->',
+            ],
+        ];
     }
 }
