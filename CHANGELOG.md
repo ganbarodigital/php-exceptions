@@ -2,7 +2,9 @@
 
 ## develop branch
 
-Nothing yet.
+### New
+
+* NonCheckCodeCaller - a better way to work out who is calling us
 
 ## 1.2.0 - Wed Jul 22 2015
 
