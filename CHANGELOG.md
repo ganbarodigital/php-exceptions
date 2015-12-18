@@ -2,6 +2,10 @@
 
 ## develop branch
 
+Nothing yet.
+
+## 1.3.1 - Fri Dec 18 2015
+
 ### Fixes
 
 * NonCheckCodeCaller - avoid PHP fatal error when we are given impossible shallow stacks to parse
