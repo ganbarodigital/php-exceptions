@@ -91,7 +91,12 @@ class NonCheckCodeCaller
         }
 
         // if we get here, then we have run out of places to look
-        return $backtrace[1];
+        if (isset($backtrace[1])) {
+            return $backtrace[1];
+        }
+        else {
+            return $backtrace[0];
+        }
     }
 
     private static function isClassNameOkay($className)
