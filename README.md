@@ -1,17 +1,5 @@
 # PHP Exceptions
 
-## Introduction
+## Deprecated
 
-The PHP Exceptions library provides a very simple base exception that you can drop into your own project to save you time and effort.
-
-## Installation
-
-Add this to your `composer.json` file:
-
-	{
-		"require": {
-			"ganbarodigital/php-exceptions": "^1.0"
-		}
-	}
-
-and then run `composer update`.
+This library has been replaced by [`ganbarodigital/php-mv-exception-helpers`](https://ganbarodigital.github.io/php-mv-exception-helpers/). Please use that instead for all new code.
